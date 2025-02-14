@@ -1,5 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { EyeClosedIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 import { useState, useTransition } from 'react';
@@ -35,6 +36,7 @@ export default function UserAuthForm() {
 
   const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [passwordVisible, setPasswordVisible] = useState(false); // Toggle state for password visibility
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
   });
@@ -50,7 +52,7 @@ export default function UserAuthForm() {
   const state = searchParams.get('state') || '';
   const nonce = searchParams.get('nonce') || '';
 
-  const oauthUrl = `${baseUrl}/api/v1/oauth/authorize?client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scope)}&response_type=${response_type}&state=${state}&nonce=${nonce}`;
+  const oauthUrl = `${baseUrl}/api/v1/openid/authorize?client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scope)}&response_type=${response_type}&state=${state}&nonce=${nonce}`;
 
   const onSubmit = async (data: UserFormValue) => {
     setLoading(true);
@@ -115,12 +117,22 @@ export default function UserAuthForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  type='password'
-                  placeholder='********'
-                  disabled={loading || isPending}
-                  {...field}
-                />
+                <div className='relative'>
+                  <Input
+                    type={passwordVisible ? 'text' : 'password'}
+                    disabled={loading || isPending}
+                    placeholder='Enter your password...'
+                    {...field}
+                  />
+                  <Button
+                    variant='icon'
+                    type='button'
+                    onClick={() => setPasswordVisible((prev) => !prev)}
+                    className='absolute right-3 top-1/2 -translate-y-1/2 transform text-gray-500'
+                  >
+                    {passwordVisible ? <EyeClosedIcon /> : <EyeOpenIcon />}
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
