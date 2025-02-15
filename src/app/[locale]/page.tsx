@@ -1,6 +1,7 @@
 'use client';
 import { useEffect } from 'react';
 
+// import { ENV } from '@/lib/env';
 import { useRouter } from '@/navigation';
 
 export default function Home() {

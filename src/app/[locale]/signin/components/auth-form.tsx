@@ -7,6 +7,8 @@ import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
+import { ENV } from '@/lib/env';
+
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -32,7 +34,6 @@ type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
   const searchParams = useSearchParams();
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -41,7 +42,7 @@ export default function UserAuthForm() {
     resolver: zodResolver(formSchema),
   });
 
-  if (!baseUrl) {
+  if (ENV.BASE_URI === '') {
     return <p>Error: API base URL is missing.</p>;
   }
 
@@ -52,7 +53,7 @@ export default function UserAuthForm() {
   const state = searchParams.get('state') || '';
   const nonce = searchParams.get('nonce') || '';
 
-  const oauthUrl = `${baseUrl}/api/v1/openid/authorize?client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scope)}&response_type=${response_type}&state=${state}&nonce=${nonce}`;
+  const oauthUrl = `${ENV.BASE_URI}}/api/v1/openid/authorize?client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scope)}&response_type=${response_type}&state=${state}&nonce=${nonce}`;
 
   const onSubmit = async (data: UserFormValue) => {
     setLoading(true);

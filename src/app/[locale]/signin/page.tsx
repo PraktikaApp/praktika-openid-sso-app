@@ -5,7 +5,7 @@ import { Link } from '@/navigation';
 import UserAuthForm from './components/auth-form';
 
 export const metadata: Metadata = {
-  title: 'Auth | PraktikaSSO',
+  title: 'SignIn | PraktikaSSO',
   description: 'Authentication forms built using the components.',
 };
 
